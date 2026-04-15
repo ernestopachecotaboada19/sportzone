@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SportZone — Tienda Deportiva Online</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600;700;900&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --orange: #FF5C00;
+      --orange-hot: #FF8C00;
+      --orange-glow: rgba(255,92,0,0.35);
+      --black: #080808;
+      --dark: #111111;
+      --card: #161616;
+      --border: #222222;
+      --white: #F5F5F5;
+      --gray: #888888;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CURSOR CUSTOM ── */
+    .cursor {
+      width: 12px; height: 12px;
+      background: var(--orange);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      transition: transform 0.15s ease;
+      mix-blend-mode: normal;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--orange);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9998;
+      transition: transform 0.4s cubic-bezier(.25,.46,.45,.94), opacity 0.3s;
+      opacity: 0.5;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 60px;
+      background: linear-gradient(to bottom, rgba(8,8,8,0.95), transparent);
+      backdrop-filter: blur(8px);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 4px;
+      color: var(--white);
+    }
+    .nav-logo span { color: var(--orange); }
+    .nav-links { display: flex; gap: 36px; }
+    .nav-links a {
+      color: var(--gray);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--orange); }
+    .nav-cta {
+      background: var(--orange);
+      color: var(--black) !important;
+      padding: 10px 24px;
+      border-radius: 2px;
+      font-weight: 700 !important;
+      letter-spacing: 1.5px !important;
+      transition: background 0.2s, transform 0.2s !important;
+    }
+    .nav-cta:hover { background: var(--orange-hot) !important; transform: scale(1.04); color: var(--black) !important; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 120px 60px 80px;
+    }
+
+    /* Grid texture */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,92,0,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,92,0,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0;
+    }
+
+    /* Orange orb */
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(255,92,0,0.18) 0%, transparent 70%);
+      top: -100px; right: -100px;
+      border-radius: 50%;
+      z-index: 0;
+      animation: pulse 4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.08); opacity: 1; }
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 700px; }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(255,92,0,0.1);
+      border: 1px solid rgba(255,92,0,0.3);
+      border-radius: 2px;
+      padding: 8px 16px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 32px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero-tag::before {
+      content: '';
+      width: 8px; height: 8px;
+      background: var(--orange);
+      border-radius: 50%;
+      animation: blink 1.5s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 10vw, 9rem);
+      line-height: 0.9;
+      letter-spacing: 2px;
+      animation: fadeUp 0.7s ease 0.1s both;
+    }
+    .hero-title .line2 { color: var(--orange); display: block; }
+    .hero-title .outline {
+      -webkit-text-stroke: 2px var(--white);
+      color: transparent;
+    }
+
+    .hero-sub {
+      margin: 28px 0 44px;
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--gray);
+      max-width: 480px;
+      animation: fadeUp 0.7s ease 0.2s both;
+    }
+    .hero-sub strong { color: var(--white); font-weight: 600; }
+
+    .hero-buttons {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      animation: fadeUp 0.7s ease 0.3s both;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: var(--orange);
+      color: var(--black);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 18px 40px;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.15);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .btn-primary:hover::after { transform: translateX(0); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px var(--orange-glow); }
+    .btn-primary svg { transition: transform 0.2s; }
+    .btn-primary:hover svg { transform: translateX(4px); }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 10px;
+      border: 1.5px solid var(--border);
+      color: var(--white);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 18px 36px;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+    .btn-secondary:hover { border-color: var(--orange); color: var(--orange); transform: translateY(-2px); }
+
+    /* Floating stats */
+    .hero-stats {
+      position: absolute;
+      right: 60px; bottom: 80px;
+      display: flex; flex-direction: column; gap: 16px;
+      animation: fadeUp 0.7s ease 0.5s both;
+      z-index: 1;
+    }
+    .stat-card {
+      background: rgba(22,22,22,0.8);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--orange);
+      padding: 16px 24px;
+      backdrop-filter: blur(10px);
+      min-width: 160px;
+    }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem;
+      color: var(--orange);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      color: var(--gray);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute; bottom: 32px; left: 60px;
+      display: flex; align-items: center; gap: 12px;
+      font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--gray); z-index: 1;
+      animation: fadeUp 0.7s ease 0.6s both;
+    }
+    .scroll-line {
+      width: 40px; height: 1px; background: var(--orange);
+      animation: expand 2s ease-in-out infinite;
+    }
+    @keyframes expand { 0%,100%{width:40px} 50%{width:70px} }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(24px); }
+      to { opacity:1; transform: translateY(0); }
+    }
+
+    /* ── TICKER ── */
+    .ticker-wrap {
+      background: var(--orange);
+      padding: 14px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker-track {
+      display: inline-flex; gap: 0;
+      animation: ticker 25s linear infinite;
+    }
+    .ticker-item {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--black);
+      padding: 0 40px;
+    }
+    .ticker-item::before { content: '★  '; }
+    @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ── PRODUCTOS ── */
+    .section {
+      padding: 100px 60px;
+      position: relative;
+    }
+
+    .section-label {
+      font-size: 0.7rem; letter-spacing: 4px;
+      text-transform: uppercase; color: var(--orange);
+      font-weight: 700; margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 1;
+      letter-spacing: 2px;
+      margin-bottom: 60px;
+    }
+    .section-title span { color: var(--orange); }
+
+    /* Gender tabs */
+    .gender-tabs {
+      display: flex; gap: 0; margin-bottom: 48px;
+      border: 1px solid var(--border);
+      width: fit-content;
+      border-radius: 2px; overflow: hidden;
+    }
+    .tab-btn {
+      padding: 14px 36px;
+      background: transparent;
+      border: none;
+      color: var(--gray);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      cursor: none;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: var(--orange);
+      color: var(--black);
+    }
+    .tab-btn:not(.active):hover { color: var(--white); background: var(--card); }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2px;
+    }
+
+    .product-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      position: relative;
+      transition: all 0.3s ease;
+      display: none;
+    }
+    .product-card.visible { display: block; }
+    .product-card:hover { border-color: var(--orange); transform: translateY(-4px); }
+    .product-card:hover .card-overlay { opacity: 1; }
+
+    .card-img {
+      width: 100%; height: 220px;
+      object-fit: cover;
+      display: block;
+      filter: grayscale(20%);
+      transition: filter 0.3s, transform 0.3s;
+    }
+    .product-card:hover .card-img { filter: grayscale(0%); transform: scale(1.03); }
+
+    .card-img-placeholder {
+      width: 100%; height: 220px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem;
+      background: linear-gradient(135deg, #1a1a1a, #222);
+    }
+
+    .card-overlay {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(to top, rgba(255,92,0,0.15), transparent);
+      opacity: 0; transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .card-tag {
+      position: absolute; top: 16px; left: 16px;
+      background: var(--orange);
+      color: var(--black);
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 5px 10px;
+    }
+
+    .card-body { padding: 24px; }
+    .card-sku {
+      font-size: 0.65rem; letter-spacing: 2px;
+      color: var(--gray); text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .card-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.4rem; font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 12px; line-height: 1.2;
+    }
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid var(--border);
+      padding-top: 16px; margin-top: 16px;
+    }
+    .card-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem; color: var(--orange);
+    }
+    .card-price span { font-family: 'Barlow', sans-serif; font-size: 0.75rem; color: var(--gray); display: block; margin-top: -4px; }
+    .card-cat {
+      font-size: 0.65rem; letter-spacing: 2px;
+      color: var(--gray); text-transform: uppercase;
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+    }
+
+    /* ── FORMULARIO CTA ── */
+    .cta-section {
+      margin: 0 60px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+      padding: 80px;
+    }
+    .cta-section::before {
+      content: 'SPORT';
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18rem;
+      color: rgba(255,92,0,0.04);
+      position: absolute; right: -40px; top: -40px;
+      line-height: 1; pointer-events: none;
+    }
+    .cta-section::after {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 4px; background: var(--orange);
+    }
+    .cta-inner { position: relative; z-index: 1; max-width: 600px; }
+    .cta-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      letter-spacing: 2px; line-height: 1;
+      margin-bottom: 20px;
+    }
+    .cta-title span { color: var(--orange); }
+    .cta-desc {
+      color: var(--gray); font-size: 1rem;
+      line-height: 1.7; margin-bottom: 36px; font-weight: 300;
+    }
+    .cta-desc strong { color: var(--white); }
+
+    /* ── POR QUÉ NOSOTROS ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2px;
+      margin-top: 0;
+    }
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 40px 32px;
+      transition: border-color 0.2s;
+    }
+    .feature-card:hover { border-color: var(--orange); }
+    .feature-icon { font-size: 2.5rem; margin-bottom: 20px; display: block; }
+    .feature-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.3rem; font-weight: 700;
+      letter-spacing: 1px; margin-bottom: 12px;
+    }
+    .feature-desc { color: var(--gray); font-size: 0.9rem; line-height: 1.6; font-weight: 300; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 20px;
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem; letter-spacing: 4px;
+    }
+    .footer-logo span { color: var(--orange); }
+    .footer-text { color: var(--gray); font-size: 0.8rem; }
+    .footer-text a { color: var(--orange); text-decoration: none; }
+
+    /* ── SEPARADOR ── */
+    .divider {
+      width: 60px; height: 3px;
+      background: var(--orange);
+      margin-bottom: 24px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 18px 24px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 24px 60px; }
+      .hero-stats { display: none; }
+      .scroll-hint { left: 24px; }
+      .section { padding: 70px 24px; }
+      .cta-section { margin: 0 24px; padding: 48px 32px; }
+      footer { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Sport<span>Zone</span></div>
+    <div class="nav-links">
+      <a href="#productos">Productos</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#comprar" class="nav-cta">Comprar Ahora</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-tag">🏅 Tienda Deportiva Nacional</div>
+      <h1 class="hero-title">
+        DONDE<br>
+        <span class="line2">CAMPEONES</span>
+        <br><span class="outline">COMPRAN</span>
+      </h1>
+      <p class="hero-sub">
+        Ropa, calzado y accesorios deportivos para <strong>hombres y mujeres</strong>.<br>
+        Envío a todo el país. Precios directos al consumidor. 🇵🇪
+      </p>
+      <div class="hero-buttons">
+        <a href="#comprar" class="btn-primary">
+          Hacer mi pedido
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#productos" class="btn-secondary">
+          Ver catálogo
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-card">
+        <div class="stat-num">12+</div>
+        <div class="stat-label">Productos SKU</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Categorías</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">🇵🇪</div>
+        <div class="stat-label">Todo el país</div>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      Explora
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker-track">
+      <span class="ticker-item">Ropa Deportiva</span>
+      <span class="ticker-item">Calzado Premium</span>
+      <span class="ticker-item">Accesorios Sport</span>
+      <span class="ticker-item">Envío Nacional</span>
+      <span class="ticker-item">Hombre & Mujer</span>
+      <span class="ticker-item">SportZone Perú</span>
+      <span class="ticker-item">Ropa Deportiva</span>
+      <span class="ticker-item">Calzado Premium</span>
+      <span class="ticker-item">Accesorios Sport</span>
+      <span class="ticker-item">Envío Nacional</span>
+      <span class="ticker-item">Hombre & Mujer</span>
+      <span class="ticker-item">SportZone Perú</span>
+    </div>
+  </div>
+
+  <!-- PRODUCTOS -->
+  <section class="section" id="productos">
+    <div class="section-label">Catálogo 2025</div>
+    <h2 class="section-title">NUESTROS<br><span>PRODUCTOS</span></h2>
+
+    <div class="gender-tabs">
+      <button class="tab-btn active" onclick="filterGender('H')">👨 Hombre</button>
+      <button class="tab-btn" onclick="filterGender('M')">👩 Mujer</button>
+    </div>
+
+    <div class="products-grid" id="productsGrid">
+
+      <!-- HOMBRE -->
+      <div class="product-card visible" data-gender="H">
+        <div class="card-img-placeholder">👕</div>
+        <div class="card-tag">Ropa</div>
+        <div class="card-overlay"></div>
+        <div class="card-body">
+          <div class="card-sku">SKU: R-H-001</div>
+          <div class="card-name">Polo Deportivo Hombre</div>
+          <div class="card-footer">
+            <div class="card-price">S/ 49.90<span>Precio unitario</span></div>
+            <div class="card-cat">Ropa</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card visible" data-gender="H">
+        <div class="card-img-placeholder">🩳</div>
+        <div class="card-tag">Ropa</div>
+        <div class="card-overlay"></div>
+        <div class="card-body">
+          <div class="card-sku">SKU: R-H-002</div>
+          <div class="card-name">Short de Running Hombre</div>
+          <div class="card-footer">
+            <div class="card-price">S/ 39.90<span>Precio unitario</span></div>
+            <div class="card-cat">Ropa</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card visible" data-gender="H">
+        <div class="card-img-placeholder">👟</div>
+        <div class="card-tag">Calzado</div>
+        <div class="card-overlay"></div>
+        <div class="card-body">
+          <div class="card-sku">SKU: C-H-003</div>
+          <div class="card-name">Zapatilla Running Hombre</div>
+          <div class="card-footer">
+            <div class="card-price">S/ 179.90<span>Precio unitario</span></div>
+            <div class="card-cat">Calzado</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card visible" data-gender="H">
+        <div class="card-img-placeholder">⚽</div>
+        <div class="card-tag">Calzado</div>
+        <div class="card-overlay"></div>
+        <div class="card-body">
+          <div class="card-sku">SKU: C-H-004</div>
+          <div class="card-name">Zapatilla Fútbol Hombre</div>
+          <div class="card-footer">
+            <div class="card-price">S/ 149.90<span>Precio unitario</span></div>
+            <div class="card-cat">Calzado</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card visible" data-gender="H">
+        <div class="card-img-placeholder">🧢</div>
+        <div class="card-tag">Accesorio</div>
+        <div class="card-overlay"></div>
+        <div class="card-body">
+          <div class="card-sku">SKU: A-H-005</div>
+          <div class="card-name">Gorra Deportiva Hombre</div>
+          <div class="card-footer">
+            <div class="card-price">S/ 29.90<span>Precio unitario</span></div>
+            <div class="card-cat">Accesorio</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card visible" data-gender="H">
+        <div class="card-img-placeholder">🎒</div>
+        <div class="card-tag">Accesorio</div>
+        <div class="card-overlay"></div>
+        <div class="card-body">
+          <div class="card-sku">SKU: A-H-006</div>
+          <div class="card-name">Bolso Deportivo Hombre</div>
+          <div class="card-footer">
+            <div class="card-price">S/ 79.90<span>Precio unitario</span></div>
+            <div class="card-cat">Accesorio</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MUJER -->
+      <div class="product-card" data-gender="M">
+        <div class="card-img-placeholder">👚</div>
+        <div class="card-tag">Ropa</div>
+        <div class="card-overlay"></div>
+        <div class="card-body">
+          <div class="card-sku">SKU: R-M-007</div>
+          <div class="card-name">Sudadera Deportiva Mujer</div>
+          <div class="card-footer">
+            <div class="card-price">S/ 69.90<span>Precio unitario</span></div>
+            <div class="card-cat">Ropa</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-gender="M">
+        <div class="card-img-placeholder">🩱</div>
+        <div class="card-tag">Ropa</div>
+        <div class="card-overlay"></div>
+        <div class="card-body">
+          <div class="card-sku">SKU: R-M-008</div>
+          <div class="card-name">Leggings de Compresión Mujer</div>
+          <div class="card-footer">
+            <div class="card-price">S/ 59.90<span>Precio unitario</span></div>
+            <div class="card-cat">Ropa</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-gender="M">
+        <div class="card-img-placeholder">👟</div>
+        <div class="card-tag">Calzado</div>
+        <div class="card-overlay"></div>
+        <div class="card-body">
+          <div class="card-sku">SKU: C-M-009</div>
+          <div class="card-name">Zapatilla Running Mujer</div>
+          <div class="card-footer">
+            <div class="card-price">S/ 169.90<span>Precio unitario</span></div>
+            <div class="card-cat">Calzado</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-gender="M">
+        <div class="card-img-placeholder">🏀</div>
+        <div class="card-tag">Calzado</div>
+        <div class="card-overlay"></div>
+        <div class="card-body">
+          <div class="card-sku">SKU: C-M-010</div>
+          <div class="card-name">Zapatilla Básquetbol Mujer</div>
+          <div class="card-footer">
+            <div class="card-price">S/ 159.90<span>Precio unitario</span></div>
+            <div class="card-cat">Calzado</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-gender="M">
+        <div class="card-img-placeholder">🧢</div>
+        <div class="card-tag">Accesorio</div>
+        <div class="card-overlay"></div>
+        <div class="card-body">
+          <div class="card-sku">SKU: A-M-011</div>
+          <div class="card-name">Gorra Deportiva Mujer</div>
+          <div class="card-footer">
+            <div class="card-price">S/ 34.90<span>Precio unitario</span></div>
+            <div class="card-cat">Accesorio</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-gender="M">
+        <div class="card-img-placeholder">👜</div>
+        <div class="card-tag">Accesorio</div>
+        <div class="card-overlay"></div>
+        <div class="card-body">
+          <div class="card-sku">SKU: A-M-012</div>
+          <div class="card-name">Bolso Deportivo Mujer</div>
+          <div class="card-footer">
+            <div class="card-price">S/ 89.90<span>Precio unitario</span></div>
+            <div class="card-cat">Accesorio</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- POR QUÉ NOSOTROS -->
+  <section class="section" id="nosotros" style="padding-top:0">
+    <div class="section-label">¿Por qué SportZone?</div>
+    <h2 class="section-title">LO QUE NOS<br><span>DIFERENCIA</span></h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🚚</span>
+        <div class="feature-title">Envío Nacional</div>
+        <div class="feature-desc">Llegamos a todas las ciudades del Perú. Rápido, seguro y con seguimiento en tiempo real.</div>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">💯</span>
+        <div class="feature-title">Calidad Garantizada</div>
+        <div class="feature-desc">Productos seleccionados con los más altos estándares deportivos para tu mejor rendimiento.</div>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">💰</span>
+        <div class="feature-title">Precios Directos</div>
+        <div class="feature-desc">Sin intermediarios. Precios justos directo al consumidor para que rindas más gastando menos.</div>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎯</span>
+        <div class="feature-title">Catálogo Completo</div>
+        <div class="feature-desc">Ropa, calzado y accesorios para hombre y mujer. Todo lo que necesitas en un solo lugar.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FORMULARIO -->
+  <div id="comprar">
+    <div class="cta-section">
+      <div class="cta-inner">
+        <div class="section-label">Haz tu pedido</div>
+        <div class="divider"></div>
+        <h2 class="cta-title">¿LISTO PARA<br><span>COMPRAR?</span></h2>
+        <p class="cta-desc">
+          Completa nuestro formulario de pedido en <strong>menos de 3 minutos</strong>.<br>
+          Elige tus productos, indica la cantidad y nosotros nos encargamos del resto. 🏅
+        </p>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeeByGEAllkvgUHlozn1KlMUyCi1OzbsjNXXVT0taYAuDHSlQ/viewform"
+           target="_blank" class="btn-primary" style="font-size:1.2rem; padding: 20px 48px;">
+          Ir al formulario de compra
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Sport<span>Zone</span></div>
+    <div class="footer-text">© 2025 SportZone. Tienda Deportiva Nacional 🇵🇪</div>
+    <div class="footer-text">Hecho con ❤️ para el taller DLM</div>
+  </footer>
+
+  <script>
+    // CURSOR
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.transform = `translate(${mx - 6}px, ${my - 6}px)`;
+    });
+    function animRing() {
+      rx += (mx - rx - 18) * 0.12;
+      ry += (my - ry - 18) * 0.12;
+      ring.style.transform = `translate(${rx}px, ${ry}px)`;
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.style.transform += ' scale(2.5)');
+      el.addEventListener('mouseleave', () => {});
+    });
+
+    // GENDER FILTER
+    function filterGender(gender) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      document.querySelectorAll('.product-card').forEach(card => {
+        card.classList.toggle('visible', card.dataset.gender === gender);
+      });
+    }
+
+    // INTERSECTION OBSERVER para animaciones
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.product-card, .feature-card, .stat-card').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease, border-color 0.3s';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
